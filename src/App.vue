@@ -4,6 +4,15 @@
   </div>
 </template>
 
-<style lang="less">
-
+<script>
+export default {
+  data () {
+    return {}
+  }
+}
+</script>
+<style lang="less" scoped>
+#app {
+  height: 100%;
+}
 </style>
