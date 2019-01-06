@@ -12,7 +12,7 @@
           <el-col :span="8">
             <p class="home_header_right">
               欢迎上海前端31期星曜会员
-              <a href="javascript:;">退出</a>
+              <a href="javascript:;" @click="logout">退出</a>
             </p>
           </el-col>
         </el-row>
@@ -20,34 +20,49 @@
 
       <el-container class="home_dibu">
         <el-aside width="200px" class="home_aside">
-          <el-row class="tac">
-            <el-col>
-              <!-- 当前激活菜单的 index -->
-              <el-menu
-                default-active="/home/user"
-                @open="handleOpen"
+          <!-- 当前激活菜单的 index
                 @close="handleClose"
-                background-color="#545c64"
-                text-color="#fff"
-                active-text-color="#ffd04b"
-                :router="true"
-              >
-                <el-submenu index="1">
-                  <template slot="title">
-                    <i class="el-icon-location"></i>
-                    <span>用户管理</span>
-                  </template>
-                  <el-menu-item index="/home/user">
-                    <!-- 二级菜单的图标和名称： -->
-                    <template slot="title">
-                      <i class="el-icon-menu"></i>
-                      <span>用户列表</span>
-                    </template>
-                  </el-menu-item>
-                </el-submenu>
-              </el-menu>
-            </el-col>
-          </el-row>
+                @open="handleOpen"
+          -->
+          <el-menu
+            default-active="1"
+            background-color="#545c64"
+            text-color="#fff"
+            active-text-color="#ffd04b"
+            :router="true"
+          >
+            <el-submenu index="1">
+              <template slot="title">
+                <i class="el-icon-location"></i>
+                <span>用户管理</span>
+              </template>
+              <el-menu-item index="/home/user">
+                <!-- 二级菜单的图标和名称： -->
+                <template slot="title">
+                  <i class="el-icon-menu"></i>
+                  <span>用户列表</span>
+                </template>
+              </el-menu-item>
+            </el-submenu>
+            <el-submenu index="2">
+              <template slot="title">
+                <i class="el-icon-location"></i>
+                <span>权限管理</span>
+              </template>
+              <el-menu-item index="/home/roles">
+                <template slot="title">
+                  <i class="el-icon-menu"></i>
+                  <span>角色列表</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="/home/rights">
+                <template slot="title">
+                  <i class="el-icon-menu"></i>
+                  <span>权限列表</span>
+                </template>
+              </el-menu-item>
+            </el-submenu>
+          </el-menu>
         </el-aside>
         <el-main>
           <router-view></router-view>
@@ -59,13 +74,36 @@
 
 <script>
 export default {
+  data () {
+    return {
+      msg: ''
+    }
+  },
   methods: {
-    // handleOpen(key, keyPath) {
-    //   console.log(key, keyPath);
-    // },
-    // handleClose(key, keyPath) {
-    //   console.log(key, keyPath);
-    // }
+    async logout () {
+      try {
+        await this.$confirm('您确定要退出登陆吗？', '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+
+        this.$message({
+          type: 'success',
+          duration: 1000,
+          message: '退出成功!'
+        })
+
+        localStorage.removeItem('token')
+        this.$router.push('/')
+      } catch (error) {
+        this.$message({
+          type: 'info',
+          duration: 1000,
+          message: '已取消退出'
+        })
+      }
+    }
   }
 }
 </script>

@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   data () {
@@ -50,26 +49,26 @@ export default {
   },
   methods: {
     submitForm (formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(async valid => {
         if (!valid) {
           return
         }
-        axios
-          .post('http://localhost:8888/api/private/v1/login', this.ruleForm)
-          .then(res => {
-            if (res.data.meta.status === 200) {
-              localStorage.setItem('token', res.data.data.token)
-              this.$router.push('home')
-              // console.log(res);
-            } else {
-              this.$message({
-                message: res.data.meta.msg,
-                showClose: true,
-                type: 'error',
-                duration: 1000
-              })
-            }
+        const res = await this.$axios.post(
+          'login',
+          this.ruleForm
+        )
+        if (res.data.meta.status === 200) {
+          localStorage.setItem('token', res.data.data.token)
+          this.$router.push('home')
+          // console.log(res);
+        } else {
+          this.$message({
+            message: res.data.meta.msg,
+            showClose: true,
+            type: 'error',
+            duration: 1000
           })
+        }
       })
     },
     resetForm (formName) {
