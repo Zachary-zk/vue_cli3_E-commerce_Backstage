@@ -25,40 +25,23 @@
                 @open="handleOpen"
           -->
           <el-menu
-            default-active="1"
+            :default-active="$route.path"
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
             :router="true"
+            :unique-opened='true'
           >
-            <el-submenu index="1">
+            <el-submenu :index="item.order + ''" v-for="(item) in asideListData" :key="item.id">
               <template slot="title">
                 <i class="el-icon-location"></i>
-                <span>用户管理</span>
+                <span>{{ item.authName }}</span>
               </template>
-              <el-menu-item index="/home/user">
+              <el-menu-item :index="'/home/' + item1.path" v-for="(item1) in item.children" :key="item1.id">
                 <!-- 二级菜单的图标和名称： -->
-                <template slot="title">
+                <template slot="title" >
                   <i class="el-icon-menu"></i>
-                  <span>用户列表</span>
-                </template>
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index="2">
-              <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>权限管理</span>
-              </template>
-              <el-menu-item index="/home/roles">
-                <template slot="title">
-                  <i class="el-icon-menu"></i>
-                  <span>角色列表</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="/home/rights">
-                <template slot="title">
-                  <i class="el-icon-menu"></i>
-                  <span>权限列表</span>
+                  <span>{{item1.authName}}</span>
                 </template>
               </el-menu-item>
             </el-submenu>
@@ -76,10 +59,16 @@
 export default {
   data () {
     return {
-      msg: ''
+      msg: '',
+      // 侧边栏导航 数据
+      asideListData: []
     }
   },
+  created () {
+    this.asideList()
+  },
   methods: {
+    // 退出登陆
     async logout () {
       try {
         await this.$confirm('您确定要退出登陆吗？', '温馨提示', {
@@ -103,6 +92,10 @@ export default {
           message: '已取消退出'
         })
       }
+    },
+    async asideList () {
+      const res = await this.$axios.get('menus')
+      this.asideListData = res.data.data
     }
   }
 }
