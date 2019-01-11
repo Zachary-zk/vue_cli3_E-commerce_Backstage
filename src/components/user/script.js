@@ -46,11 +46,21 @@ export default {
         mobile: [
           { pattern: /^[1][3,4,5,7,8][0-9]{9}$/, message: '手机格式不正确', trigger: 'blur' }
         ]
-      }
+      },
+
+      // 分配角色数据
+      isShowCharacter: false,
+      ChracterFrom: {
+        id: '',
+        rid: ''
+      },
+      username: '',
+      characterAll: []
     }
   },
   created () {
     this.axiosUsers()
+    this.getChracteAll()
   },
   methods: {
     async axiosUsers (pagenum = 1, query = '', pagesize = 3) {
@@ -185,6 +195,37 @@ export default {
           })
         }
       } catch (error) {}
+    },
+    // 显示角色分配模态框
+    async chracteDistribution (scope) {
+      this.username = scope.username
+      this.ChracterFrom.id = scope.id
+
+      this.isShowCharacter = true
+      const res = await this.$axios.get(`/users/${scope.id}`)
+      this.ChracterFrom.rid = res.data.data.rid
+    },
+    // 获取所有角色
+    async getChracteAll () {
+      const res = await this.$axios.get('/roles')
+      res.data.data.forEach(v => {
+        this.characterAll.push({
+          roleName: v.roleName,
+          id: v.id
+        })
+      })
+    },
+    // 点击确定 修改用户角色
+    async characterGood () {
+      const res = await this.$axios.put(`users/${this.ChracterFrom.id}/role`, {
+        rid: this.ChracterFrom.rid
+      })
+      // console.log(res)
+      this.$message({
+        type: 'success',
+        message: res.data.meta.msg
+      })
+      this.isShowCharacter = false
     }
   }
 }

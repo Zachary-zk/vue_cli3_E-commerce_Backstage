@@ -1,0 +1,56 @@
+<div class="categories">
+  <!-- 添加分类 -->
+  <el-button type="success" plain @click="commodityDataFrom = true">添加分类</el-button>
+  <!-- 分类一级列表 -->
+  <el-table :data="commodityData" stripe style="width: 100%" v-loading="loading">
+    <!--
+      label ：设置列名称
+      prop ：提供列内容的属性名
+
+      tree-key ：区分其他菜单，不添加该key会导致所有菜单同时展开，添加该key只展开该菜单
+      level-key ：设置菜单级别，以缩进形式表示子菜单
+      parent-key ：父级菜单id，不添加该key，则无法收起子菜单
+      child-key ：指定使用哪个属性名称表示子菜单，默认值为：children
+    -->
+
+    <el-table-tree-column tree-key="cat_id" level-key="cat_level" child-key="children" parent-key="cat_pid" label="分类名称"
+      prop="cat_name" width="320" :indent-size="20">
+      <template slot-scope="scope">
+        <span>{{ scope.row.cat_name }}</span>
+      </template>
+    </el-table-tree-column>
+    <el-table-column label="是否有效" width="180">
+      <template slot-scope="scope">
+        {{ commodityData.cat_deleted ? '否' : '是' }}
+      </template>
+    </el-table-column>
+    <el-table-column prop="cat_level" label="层级">
+    </el-table-column>
+    <el-table-column label="操作">
+      <template slot-scope="scope">
+        <el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
+        <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <!-- 分页 -->
+  <el-pagination background layout="prev, pager, next" :total="total" :page-size='5' @current-change="changeCommodity">
+  </el-pagination>
+
+  <!-- 添加分类模态框 -->
+  <el-dialog title="添加分类" :visible.sync="commodityDataFrom">
+    <el-form :model="commodityForm" label-width="100px" ref="formName">
+      <el-form-item label="分类名称">
+        <el-input v-model="commodityForm.cat_name"></el-input>
+      </el-form-item>
+      <el-form-item label="父级名称">
+        <el-cascader :props="props" :options="shopingCommodityAll" v-model="commodityForm.nameList"></el-cascader>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="commodityDataFrom = false">取 消</el-button>
+      <el-button type="primary" @click="addCommodity('formName')">确 定</el-button>
+    </div>
+  </el-dialog>
+</div>

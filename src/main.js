@@ -4,6 +4,7 @@ import router from './router'
 import ElementUI from 'element-ui'
 
 import axios from 'axios'
+import ElTreeGrid from 'element-tree-grid'
 
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -16,6 +17,8 @@ axios.interceptors.request.use(config => {
   config.headers.Authorization = localStorage.getItem('token')
   return config
 })
+// 将element-tree-grid 注册成全局组件
+Vue.component(ElTreeGrid.name, ElTreeGrid)
 
 Vue.use(ElementUI)
 
